@@ -1,0 +1,98 @@
+##
+# @date signals.yaml
+# @date 19.05.2016
+#
+# @brief Signal specifications for the CAN gateway and the monitors.
+#
+# 'signals/names' must include all the signals of interest, i.e., signals that
+# should be passed to ROS.
+#
+# Parameters of a signal:
+# - topic
+# - direction: take one of ["both"|"publish"|"subscribe"]
+# - id: CAN ID (standard 11 bits or extended 29 bits)
+# - position: starting position in bits of the signal
+# - length: length of signal in bits. <= 64 (8 bytes)
+# - isSigned: take one of [true|false]. Will be cast to a signed integer if 'true'.
+# - resolution: data will be multiplied with this value.
+# - offset: will be added to the data.
+# - period: period in seconds of the signal (needed by the monitor).
+# - min/max: range of the signal (needed by the monitor).
+#
+# @note Currently only signals up to 8 bytes are supported.
+##
+
+signals:
+
+  names: ["em_speed", "em_torque_percent", "em_torque_reference", "battery_current", "battery_voltage"]
+
+
+  # GPM13
+
+  em_speed:
+    topic: "/car/em_speed"
+    direction: "both"
+    id: 0x250
+    position: 24
+    length: 16
+    isSigned: false
+    resolution: 0.125
+    offset: 0.0
+    period: 0.01
+    min: 0.0
+    max: 8031.88
+    # rpm
+
+  em_torque_percent:
+    topic: "/car/em_torque_percent"
+    direction: "publish"
+    id: 0x250
+    position: 16
+    length: 8
+    isSigned: false
+    resolution: 1.0
+    offset: -125.0
+    min: -125.0
+    max: 125.0
+    # %
+
+  # GPM15
+
+  em_torque_reference:
+    topic: "/car/em_torque_reference"
+    direction: "publish"
+    id: 0x251
+    position: 40
+    length: 16
+    isSigned: false
+    resolution: 1.0
+    offset: 0.0
+    min: 0.0
+    max: 64255
+    # Nm
+
+  # EMG2 ibat, v, soc
+
+  battery_current:
+    topic: "/car/battery_current"
+    direction: "publish"
+    id: 0x740
+    position: 0
+    length: 16
+    isSigned: false
+    resolution: 0.05
+    offset: -1638.38
+    # A
+
+  battery_voltage:
+    topic: "/car/battery_voltage"
+    direction: "publish"
+    id: 0x740
+    position: 16
+    length: 16
+    isSigned: false
+    resolution: 0.025
+    offset: 0.0
+    min: 0.0
+    max: 1638.38
+    # V

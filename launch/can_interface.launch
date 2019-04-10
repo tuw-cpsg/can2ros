@@ -1,0 +1,24 @@
+<launch>
+  <!-- signals/topic specifications -->
+  <rosparam file="$(find can)/config/signals.yaml" />
+
+  <!-- remappings -->
+  <remap from="/can/in/frames" to="/can/gateway/frames_in" />
+  <remap from="/can/out/frames" to="/can/gateway/frames_out" />
+
+  <!-- CAN gateway -->
+  <group ns="can">
+    <!-- CAN to ROS (interface) -->
+    <node name="in" pkg="can" type="can_interface_in_node"
+	  output="screen">
+      <param name="ifname" value="can0" />
+    </node>
+    <!-- ROS to CAN (interface) -->
+    <node name="out" pkg="can" type="can_interface_out_node"
+	  output="screen">
+      <param name="ifname" value="can0" />
+    </node>
+    <!-- frames to topic / topic to frames (gateway) -->
+    <node name="gateway" pkg="can" type="can_gateway_node" output="screen" />
+  </group>
+</launch>
